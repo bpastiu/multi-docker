@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t pastiubogdan/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run pastiubogdan/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t pastiubogdan/multi-client ./client
+  - docker build -t pastiubogdan/multi-nginx ./nginx
+  - docker build -t pastiubogdan/multi-server ./server
+  - docker build -t pastiubogdan/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push pastiubogdan/multi-client
+  - docker push pastiubogdan/multi-nginx
+  - docker push pastiubogdan/multi-server
+  - docker push pastiubogdan/multi-worker
