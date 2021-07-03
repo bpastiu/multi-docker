@@ -18,3 +18,16 @@ after_success:
   - docker push pastiubogdan/multi-nginx:1.0.0
   - docker push pastiubogdan/multi-server:1.0.0
   - docker push pastiubogdan/multi-worker:1.0.0
+
+deploy:
+  deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'multi-docker'
+  env: 'MultiDocker-env'
+  bucket_name: 'elasticbeanstalk-us-east-1-005744422140'
+  bucket_path: 'docker-multi'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
